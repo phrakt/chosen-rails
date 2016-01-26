@@ -21,6 +21,7 @@ class AbstractChosen
     @results_showing = false
     @result_highlighted = null
     @allow_single_deselect = if @options.allow_single_deselect? and @form_field.options[0]? and @form_field.options[0].text is "" then @options.allow_single_deselect else false
+    @async = @options.async || false
     @disable_search_threshold = @options.disable_search_threshold || 0
     @disable_search = @options.disable_search || false
     @enable_split_word_search = if @options.enable_split_word_search? then @options.enable_split_word_search else true
@@ -35,7 +36,7 @@ class AbstractChosen
     @max_shown_results = @options.max_shown_results || Number.POSITIVE_INFINITY
 
   set_default_text: ->
-    if @form_field.getAttribute("data-placeholder")
+    if @form_field.hasAttribute("data-placeholder")
       @default_text = @form_field.getAttribute("data-placeholder")
     else if @is_multiple
       @default_text = @options.placeholder_text_multiple || @options.placeholder_text || AbstractChosen.default_multiple_text
@@ -247,7 +248,9 @@ class AbstractChosen
         return true
       when 9, 38, 40, 16, 91, 17
         # don't do anything on these keys
-      else this.results_search()
+      else
+        if !@async
+          this.results_search()
 
   clipboard_event_checker: (evt) ->
     setTimeout (=> this.results_search()), 50

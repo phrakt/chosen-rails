@@ -199,7 +199,8 @@ class Chosen extends AbstractChosen
     this.update_results_content this.results_option_build({first:true})
 
     this.search_field_disabled()
-    this.show_search_field_default()
+    if !@async
+      this.show_search_field_default()
     this.search_field_scale()
 
     @parsing = false
